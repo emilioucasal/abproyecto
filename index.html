@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía ABP Proyectos — Coronado</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #f5f3ee;
+    --surface:   #ffffff;
+    --surface2:  #f0ede6;
+    --border:    #dbd8d0;
+    --border2:   #c8c4bb;
+    --text:      #1a1916;
+    --text2:     #6b6860;
+    --text3:     #9e9b94;
+    --accent:    #2d5f3f;
+    --accent-bg: #e8f2eb;
+    --accent-t:  #1a3d27;
+    --warn:      #7a4a00;
+    --warn-bg:   #fdf3e3;
+    --danger:    #7a1f1f;
+    --danger-bg: #fdf0f0;
+    --info:      #1a3d6b;
+    --info-bg:   #e8f0fb;
+    --radius:    10px;
+    --radius-sm: 6px;
+    --shadow:    0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+  }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .header-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  header p {
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  .source-badge {
+    font-size: 11px;
+    color: var(--text3);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* ── Nav tabs ── */
+  .nav-wrapper {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 97px;
+    z-index: 99;
+  }
+
+  nav {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  nav button {
+    padding: 14px 20px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text2);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+  }
+
+  nav button:hover { color: var(--text); }
+
+  nav button.active {
+    color: var(--accent);
+    font-weight: 500;
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── Main ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 36px 40px 60px;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── Typography ── */
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .section-lead {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 28px;
+    max-width: 640px;
+  }
+
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+    margin-top: 28px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .field-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 4px;
+    margin-top: 12px;
+  }
+  .field-label:first-child { margin-top: 0; }
+
+  .field-value {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── Alerts ── */
+  .alert {
+    border-radius: var(--radius-sm);
+    padding: 13px 16px;
+    font-size: 13px;
+    line-height: 1.65;
+    margin-bottom: 16px;
+    border-left: 3px solid;
+  }
+
+  .alert strong { font-weight: 600; }
+
+  .alert-info    { background: var(--info-bg);   color: var(--info);   border-color: #5588cc; }
+  .alert-warn    { background: var(--warn-bg);   color: var(--warn);   border-color: #e09a2a; }
+  .alert-success { background: var(--accent-bg); color: var(--accent-t); border-color: var(--accent); }
+  .alert-danger  { background: var(--danger-bg); color: var(--danger); border-color: #cc5555; }
+
+  /* ── No/Sí grid ── */
+  .no-yes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 600px) {
+    .no-yes { grid-template-columns: 1fr; }
+  }
+
+  .nosi-card {
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    border: 1px solid;
+  }
+
+  .nosi-card.no {
+    background: var(--danger-bg);
+    border-color: #e8c0c0;
+  }
+
+  .nosi-card.si {
+    background: var(--accent-bg);
+    border-color: #b8d8c2;
+  }
+
+  .nosi-head {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+  }
+
+  .no .nosi-head { color: var(--danger); }
+  .si .nosi-head { color: var(--accent-t); }
+
+  .nosi-item {
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 4px;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .nosi-item::before {
+    content: '•';
+    position: absolute;
+    left: 2px;
+  }
+
+  .no .nosi-item { color: var(--danger); }
+  .si .nosi-item { color: var(--accent-t); }
+
+  /* ── Steps ── */
+  .step-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+
+  .step-num {
+    min-width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ── Phase grid ── */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .phase-grid { grid-template-columns: 1fr; }
+  }
+
+  .phase-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .phase-head {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase-item {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.65;
+    margin-bottom: 4px;
+    padding-left: 12px;
+    position: relative;
+  }
+
+  .phase-item::before {
+    content: '·';
+    position: absolute;
+    left: 2px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── Compare grid ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 600px) {
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+
+  .compare-head {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-item {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.65;
+    margin-bottom: 4px;
+    padding-left: 12px;
+    position: relative;
+  }
+
+  .compare-item::before {
+    content: '·';
+    position: absolute;
+    left: 2px;
+    color: var(--text3);
+    font-weight: 700;
+  }
+
+  .compare-example {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--text3);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* ── Filter bar ── */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+
+  .filter-btn:hover { background: var(--surface2); }
+
+  .filter-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* ── Example cards ── */
+  .example-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    transition: border-color .15s;
+  }
+
+  .example-card:hover { border-color: var(--border2); }
+
+  .example-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .example-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .badge-bio  { background: #e8f2eb; color: #1a3d27; border: 1px solid #b8d8c2; }
+  .badge-info { background: var(--info-bg); color: var(--info); border: 1px solid #bcd0ee; }
+  .badge-eco  { background: var(--warn-bg); color: var(--warn); border: 1px solid #f0d090; }
+  .badge-dur  { background: var(--surface2); color: var(--text3); border: 1px solid var(--border); }
+
+  .example-question {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--accent-t);
+    background: var(--accent-bg);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: 14px;
+    line-height: 1.55;
+  }
+
+  .example-product {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.55;
+  }
+
+  .tag-section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 5px;
+    margin-top: 10px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  .tag.impact { background: #e8f2eb; color: #1a3d27; border-color: #b8d8c2; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text3);
+    padding: 24px 40px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="header-tag">Material de clase</div>
+      <h1>Guía ABP Proyectos</h1>
+      <p>Diseño y aplicación en aula </p>
+    </div>
+    <span class="source-badge">Basado en Coronado, M. — Los tres ABP</span>
+  </div>
+</header>
+
+<div class="nav-wrapper">
+  <nav>
+    <button class="active" onclick="showTab('que-es', this)">¿Qué es (y qué no es)?</button>
+    <button onclick="showTab('ejemplos', this)">Ejemplos por materia</button>
+    <button onclick="showTab('diseno', this)">Cómo diseñarlo</button>
+    <button onclick="showTab('vs-prob', this)">ABProy vs ABProb</button>
+  </nav>
+</div>
+
+<main>
+
+  <!-- ── TAB 1: QUÉ ES ── -->
+  <div id="tab-que-es" class="section active">
+    <p class="section-title">¿Qué es un ABProy?</p>
+    <p class="section-lead">Un proyecto es una secuencia de acciones planificadas orientadas a producir algo concreto. No es una suma de tareas sueltas: tiene un producto final, un problema que lo justifica, y exige que el alumno planifique, colabore y tome decisiones propias.</p>
+
+    <div class="alert alert-info">
+      <strong>La clave:</strong> el alumno tiene que producir algo que no existía antes, y ese proceso de producción <em>es</em> el aprendizaje. No alcanza con entregar un TP.
+    </div>
+
+    <div class="no-yes">
+      <div class="nosi-card no">
+        <div class="nosi-head">✗ Esto NO es un ABProy</div>
+        <div class="nosi-item">Hacer un resumen o TP sobre un tema</div>
+        <div class="nosi-item">Una serie de ejercicios agrupados</div>
+        <div class="nosi-item">Una lámina o afiche sobre el contenido</div>
+        <div class="nosi-item">Una exposición oral del libro</div>
+        <div class="nosi-item">Buscar información en internet y pegarla</div>
+        <div class="nosi-item">El docente define todo y el alumno ejecuta</div>
+        <div class="nosi-item">Dividir tareas para ensamblarlas al final</div>
+      </div>
+      <div class="nosi-card si">
+        <div class="nosi-head">✓ Esto SÍ es un ABProy</div>
+        <div class="nosi-item">Diseñar una campaña de comunicación real</div>
+        <div class="nosi-item">Crear una app, podcast, maqueta o prototipo</div>
+        <div class="nosi-item">Proponer una solución a un problema escolar</div>
+        <div class="nosi-item">Producir un video documental con investigación</div>
+        <div class="nosi-item">Desarrollar un modelo o simulación funcional</div>
+        <div class="nosi-item">El alumno elige, planifica y toma decisiones</div>
+        <div class="nosi-item">Hay un producto final que se puede presentar</div>
+      </div>
+    </div>
+
+    <h3>Tres condiciones que debe cumplir (Coronado, cap. 6)</h3>
+
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Usa materiales</div>
+        <div class="step-desc">Físicos (maqueta, prototipo, instalación) o simbólicos (código, video, informe, campaña). El producto tiene existencia propia: puede verse, usarse, presentarse.</div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Tiene consignas que andamian</div>
+        <div class="step-desc">Las instrucciones no dicen qué hacer paso a paso, sino que orientan sin resolver por el alumno. Son un andamio, no un molde. La diferencia: el molde da la forma; el andamio sostiene mientras vos la construís.</div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Genera sentido de logro</div>
+        <div class="step-desc">El alumno puede ver el producto terminado, presentarlo, compartirlo con otros. No es para el cajón del docente ni para calificar y olvidar.</div>
+      </div>
+    </div>
+
+    <div class="alert alert-warn" style="margin-top:24px">
+      <strong>Error frecuente:</strong> llamar "proyecto" a una actividad larga con mucho trabajo. La diferencia no es la duración ni la cantidad de tareas, sino si el alumno tuvo que planificar, decidir y producir algo propio.
+    </div>
+  </div>
+
+  <!-- ── TAB 2: EJEMPLOS ── -->
+  <div id="tab-ejemplos" class="section">
+    <p class="section-title">Ejemplos concretos para secundaria</p>
+    <p class="section-lead">Filtrá por tu materia. Cada ejemplo incluye pregunta central, producto esperado, y los contenidos separados por impacto (se evalúan con rigurosidad) y apoyo (se trabajan pero no son el foco de calificación).</p>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterEx('all', this)">Todos</button>
+      <button class="filter-btn" onclick="filterEx('bio', this)">Ciencias Naturales</button>
+      <button class="filter-btn" onclick="filterEx('info', this)">Informática</button>
+      <button class="filter-btn" onclick="filterEx('eco', this)">Cs. Económicas</button>
+    </div>
+
+    <div id="examples-container"></div>
+  </div>
+
+  <!-- ── TAB 3: DISEÑO ── -->
+  <div id="tab-diseno" class="section">
+    <p class="section-title">Cómo diseñar un ABProy</p>
+    <p class="section-lead">Basado en el Capítulo 6 de Coronado. Antes de arrancar, necesitás tener estas 6 piezas definidas. Si alguna falta, el proyecto se debilita desde el inicio.</p>
+
+    <div class="card">
+      <div class="field-label">1 — Modalidad de cooperación</div>
+      <div class="field-value">¿Individual, dupla, grupo pequeño (3-4), grupo grande? Definir roles dentro del equipo: quién investiga, quién produce, quién presenta. <strong>El objetivo no es dividir tareas para ensamblarlas al final</strong>, sino que todos trabajen de forma realmente colaborativa sobre el problema.</div>
+    </div>
+
+    <div class="card">
+      <div class="field-label">2 — Título del proyecto</div>
+      <div class="field-value">Sugerente, creativo, que genere expectativa. Puede surgir de una lluvia de ideas con los propios alumnos. Ejemplos: <em>"¿Podemos alimentar a la escuela?"</em>, <em>"El barrio que vemos y el que no vemos"</em>, <em>"Código que cuida"</em>. Puede ser provisorio mientras se formula el proyecto.</div>
+    </div>
+
+    <div class="card">
+      <div class="field-label">3 — Contenidos de alto impacto vs. de apoyo</div>
+      <div class="field-value">Los de <strong>alto impacto</strong> son los contenidos académicos centrales del programa: serán enseñados en profundidad y evaluados con rigurosidad. Los de <strong>apoyo</strong> son secundarios: saber buscar fuentes, hacer un video, trabajar en equipo. Ambos importan, pero solo los primeros se califican con el mismo nivel de exigencia.</div>
+    </div>
+
+    <div class="card">
+      <div class="field-label">4 — Pregunta central</div>
+      <div class="field-value">Es el núcleo del proyecto. Corta, compacta, sin respuesta inmediata. Funciona como "faro" durante todo el proceso. Debe conectar directamente con los contenidos de alto impacto. Ejemplos: <em>"¿Qué tan seguros son los datos que subimos?"</em>, <em>"¿Es posible una empresa sustentable en nuestro barrio?"</em>, <em>"¿Qué le pasa al ecosistema si desaparece una especie clave?"</em></div>
+    </div>
+
+    <div class="card">
+      <div class="field-label">5 — Objetivos de aprendizaje</div>
+      <div class="field-value">Pocos (2 a 4), formulados de modo sencillo y operativo. Deben derivar naturalmente de la pregunta central. No son objetivos de tarea ("entregar el informe"), sino de aprendizaje real ("comprender cómo funciona el sistema inmune ante un agente externo").</div>
+    </div>
+
+    <div class="card">
+      <div class="field-label">6 — Itinerario del producto</div>
+      <div class="field-value">La secuencia de acciones que lleva al producto final, con hitos intermedios (checkpoint 1: investigación; checkpoint 2: borrador; checkpoint 3: versión final). El producto puede ser: informe, maqueta, app, video, podcast, campaña, simulación, modelo 3D, folleto, evento, instalación.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Las 3 fases del proyecto</h3>
+
+    <div class="phase-grid">
+      <div class="phase-card">
+        <div class="phase-head">Inicio</div>
+        <div class="phase-item">Problematización y planteamiento</div>
+        <div class="phase-item">Formación de equipos y roles</div>
+        <div class="phase-item">Acuerdos entre áreas (si es inter)</div>
+        <div class="phase-item">Identificación de recursos</div>
+        <div class="phase-item">Presentar la pregunta central</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-head">Desarrollo</div>
+        <div class="phase-item">Coordinación de actividades</div>
+        <div class="phase-item">Monitoreo del proceso</div>
+        <div class="phase-item">Retroalimentación formativa</div>
+        <div class="phase-item">"Banderas rojas": intervenir cuando un grupo se estanca</div>
+        <div class="phase-item">Checkpoints intermedios</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-head">Cierre</div>
+        <div class="phase-item">Presentación del producto</div>
+        <div class="phase-item">Autoevaluación y coevaluación</div>
+        <div class="phase-item">Valoración del proceso</div>
+        <div class="phase-item">Reflexión metacognitiva</div>
+        <div class="phase-item">¿Qué haríamos diferente?</div>
+      </div>
+    </div>
+
+    <div class="alert alert-warn">
+      <strong>Punto caliente:</strong> el mayor riesgo está en el inicio. Si la pregunta central no engancha o los grupos no están bien formados, el proyecto se vuelve "anémico" desde el principio y difícil de recuperar.
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Rúbrica de evaluación del proceso (Tabla 11 — Coronado)</h3>
+
+    <div class="card" style="padding:0; overflow:hidden;">
+      <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead>
+          <tr style="background:var(--surface2);">
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--text2); border-bottom:1px solid var(--border); width:22%">Criterio</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--danger); border-bottom:1px solid var(--border); width:26%">1 — Inicial</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--warn); border-bottom:1px solid var(--border); width:26%">2 — En desarrollo</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--accent); border-bottom:1px solid var(--border); width:26%">3-4 — Competente / Excelente</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:10px 14px; font-weight:500; color:var(--text); border-bottom:1px solid var(--border); vertical-align:top">Contribución al desafío inicial</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">No participa en formular preguntas ni el problema.</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">Contribuye poco; el problema planteado es superficial.</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">Colabora activamente; formula preguntas profundas y originales.</td>
+          </tr>
+          <tr style="background:var(--bg)">
+            <td style="padding:10px 14px; font-weight:500; color:var(--text); border-bottom:1px solid var(--border); vertical-align:top">Planificación inicial</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">No logra definir un plan de trabajo organizado.</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">Plan con debilidades en estructura o claridad.</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">Plan detallado, con roles definidos y plazos realistas.</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px; font-weight:500; color:var(--text); border-bottom:1px solid var(--border); vertical-align:top">Ejecución y tiempos</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">No cumple plazos ni rectifica.</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">Sigue el plan con demoras y algunos ajustes.</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">Ejecuta con eficiencia y flexibilidad; gestiona bien el tiempo.</td>
+          </tr>
+          <tr style="background:var(--bg)">
+            <td style="padding:10px 14px; font-weight:500; color:var(--text); border-bottom:1px solid var(--border); vertical-align:top">Colaboración</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">No colabora; genera conflictos sin resolución.</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">Colabora con dificultad; necesita mediación constante.</td>
+            <td style="padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top">Colabora activamente; contribuye a resolver conflictos.</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px; font-weight:500; color:var(--text); vertical-align:top">Metacognición y comunicación</td>
+            <td style="padding:10px 14px; color:var(--text2); vertical-align:top">No reflexiona sobre el proceso ni comunica resultados.</td>
+            <td style="padding:10px 14px; color:var(--text2); vertical-align:top">Reflexión superficial; comunicación básica.</td>
+            <td style="padding:10px 14px; color:var(--text2); vertical-align:top">Reflexiona con profundidad; comunica resultados con claridad.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── TAB 4: VS PROB ── -->
+  <div id="tab-vs-prob" class="section">
+    <p class="section-title">ABProy vs ABProb: la diferencia concreta</p>
+    <p class="section-lead">El libro los diferencia claramente, pero el matiz es sutil. Lo más fácil es pensarlo así:</p>
+
+    <div class="alert alert-info">
+      <strong>ABProb</strong> → llegás a una decisión o conclusión fundamentada.<br>
+      <strong>ABProy</strong> → llegás a producir algo concreto que no existía.
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-head">ABP Problemas</div>
+        <div class="compare-item">Punto de llegada: una decisión fundamentada</div>
+        <div class="compare-item">Motor: el reto, la incertidumbre</div>
+        <div class="compare-item">Habilidades: analizar, contrastar, decidir</div>
+        <div class="compare-item">Duración: más corto (días o semanas)</div>
+        <div class="compare-item">Producto: informe de análisis, recomendación, propuesta</div>
+        <div class="compare-example">"¿Conviene a la empresa tercerizar la logística?" → los alumnos analizan datos y argumentan una posición.</div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-head">ABP Proyectos</div>
+        <div class="compare-item">Punto de llegada: un producto concreto</div>
+        <div class="compare-item">Motor: el propósito, el sentido de logro</div>
+        <div class="compare-item">Habilidades: planificar, producir, colaborar</div>
+        <div class="compare-item">Duración: más largo (semanas o meses)</div>
+        <div class="compare-item">Producto: app, campaña, maqueta, video, prototipo</div>
+        <div class="compare-example">"Diseñen una empresa sustentable para el barrio" → los alumnos construyen un plan de negocios real y lo presentan.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>¿Se pueden combinar?</h3>
+    <p class="section-lead">Sí, y de hecho es lo ideal. El ABProb suele ser el disparador interno del ABProy: primero los alumnos construyen el problema y analizan alternativas (ABProb), y ese análisis alimenta la producción del proyecto (ABProy). Sin el problema que lo justifique, el proyecto queda vacío o es un simple bricolaje de actividades.</p>
+
+    <div class="alert alert-success">
+      <strong>Secuencia recomendada:</strong> ABPreg (curiosidad) → ABProb (problema real) → ABProy (producto concreto). Saltear pasos produce proyectos banales o "anémicos" que se caen porque no tienen un propósito genuino.
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Ejemplo comparado — misma situación, distintos enfoques</h3>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-head">Como ABProblema</div>
+        <div class="compare-item">Situación: contaminación del arroyo del barrio</div>
+        <div class="compare-item">Tarea: investigar causas y evaluar tres posibles soluciones</div>
+        <div class="compare-item">Entrega: informe técnico con recomendación fundamentada</div>
+        <div class="compare-item">Tiempo: 2-3 semanas</div>
+        <div class="compare-example">Los alumnos analizan, argumentan y deciden qué harían. Pero no lo ejecutan.</div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-head">Como ABProyecto</div>
+        <div class="compare-item">Situación: contaminación del arroyo del barrio</div>
+        <div class="compare-item">Tarea: diseñar e implementar una campaña de concientización real</div>
+        <div class="compare-item">Entrega: materiales de campaña + evento o acción concreta</div>
+        <div class="compare-item">Tiempo: 6-8 semanas</div>
+        <div class="compare-example">Los alumnos producen algo que impacta fuera del aula. El proceso es el aprendizaje.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Basado en: Coronado, M. — <em>Aprendizaje basado en preguntas, problemas y proyectos</em> (Los tres ABP) · Material de uso docente
+</footer>
+
+<script>
+  const examples = [
+    {
+      area: 'bio',
+      title: 'Campaña de salud escolar',
+      problema: '¿Qué hábitos alimentarios de nuestra escuela afectan la salud a largo plazo?',
+      producto: 'Campaña de comunicación: infografías, videos cortos y una charla para otros cursos',
+      impacto: ['Sistema digestivo', 'Nutrición y metabolismo', 'Enfermedades no transmisibles'],
+      apoyo: ['Diseño gráfico básico', 'Comunicación oral', 'Trabajo en equipo'],
+      duracion: '4-6 semanas'
+    },
+    {
+      area: 'bio',
+      title: 'Modelo funcional del ecosistema local',
+      problema: '¿Qué pasaría con el ecosistema de nuestra plaza si desapareciera una especie clave?',
+      producto: 'Simulación visual (papel o digital) + informe explicativo presentado a la comunidad escolar',
+      impacto: ['Cadenas tróficas', 'Biodiversidad', 'Equilibrio ecológico'],
+      apoyo: ['Investigación bibliográfica', 'Presentación digital'],
+      duracion: '3-4 semanas'
+    },
+    {
+      area: 'bio',
+      title: 'Biotecnología en la cocina',
+      problema: '¿Cómo usamos microorganismos sin saberlo todos los días?',
+      producto: 'Podcast o video documental + experimento documentado (fermentación casera)',
+      impacto: ['Microorganismos', 'Biotecnología aplicada', 'Procesos celulares'],
+      apoyo: ['Producción audiovisual', 'Registro científico'],
+      duracion: '3 semanas'
+    },
+    {
+      area: 'info',
+      title: 'App para resolver un problema escolar',
+      problema: '¿Qué problema concreto de la escuela podría resolverse con una app?',
+      producto: 'Prototipo funcional (o mockup navegable) + presentación del proceso de desarrollo',
+      impacto: ['Pensamiento computacional', 'Algoritmos', 'Estructuras de datos básicas', 'UX/UI'],
+      apoyo: ['Gestión de proyecto', 'Trabajo colaborativo'],
+      duracion: '6-8 semanas'
+    },
+    {
+      area: 'info',
+      title: 'Seguridad y privacidad digital',
+      problema: '¿Qué tan seguros están los datos de los alumnos de esta escuela?',
+      producto: 'Auditoría de seguridad + guía práctica para docentes y alumnos',
+      impacto: ['Redes', 'Protocolos', 'Criptografía básica', 'Legislación de datos'],
+      apoyo: ['Escritura técnica', 'Presentación de resultados'],
+      duracion: '4 semanas'
+    },
+    {
+      area: 'info',
+      title: 'Automatización de un proceso real',
+      problema: '¿Qué tarea repetitiva de la escuela o de casa podría automatizarse con código?',
+      producto: 'Script funcional documentado + video demo + README explicativo',
+      impacto: ['Programación (Python/JS)', 'Lógica algorítmica', 'Manejo de archivos y datos'],
+      apoyo: ['Documentación técnica', 'Testing básico'],
+      duracion: '3-4 semanas'
+    },
+    {
+      area: 'eco',
+      title: 'Empresa sustentable del barrio',
+      problema: '¿Es posible crear una empresa rentable y sustentable en nuestro contexto local?',
+      producto: 'Plan de negocios completo + presentación ante "inversores" (docentes y directivos)',
+      impacto: ['Costos y precios', 'Estructura empresarial', 'Economía circular', 'Marketing'],
+      apoyo: ['Oratoria', 'Diseño de presentaciones'],
+      duracion: '6-8 semanas'
+    },
+    {
+      area: 'eco',
+      title: 'Análisis del mercado local',
+      problema: '¿Cómo afecta la inflación a las decisiones de compra en una familia de clase media?',
+      producto: 'Informe económico con datos primarios (encuestas) + visualizaciones + recomendaciones',
+      impacto: ['Inflación', 'Microeconomía del consumidor', 'Estadística aplicada'],
+      apoyo: ['Encuestas y análisis de datos', 'Excel/Sheets'],
+      duracion: '4 semanas'
+    },
+    {
+      area: 'eco',
+      title: 'Cooperativa escolar',
+      problema: '¿Podríamos organizar una cooperativa dentro de la escuela que sea económicamente viable?',
+      producto: 'Estatuto, plan económico y simulacro de asamblea fundacional',
+      impacto: ['Economía social', 'Administración', 'Contabilidad básica', 'Derecho cooperativo'],
+      apoyo: ['Negociación', 'Redacción formal'],
+      duracion: '5-6 semanas'
+    }
+  ];
+
+  const areaLabel = { bio: 'Ciencias Naturales', info: 'Informática', eco: 'Cs. Económicas' };
+  const areaClass = { bio: 'badge-bio', info: 'badge-info', eco: 'badge-eco' };
+
+  function renderExamples(filter) {
+    const list = filter === 'all' ? examples : examples.filter(e => e.area === filter);
+    document.getElementById('examples-container').innerHTML = list.map(e => `
+      <div class="example-card">
+        <div class="example-header">
+          <div class="example-title">${e.title}</div>
+          <div class="badge-row">
+            <span class="badge ${areaClass[e.area]}">${areaLabel[e.area]}</span>
+            <span class="badge badge-dur">~${e.duracion}</span>
+          </div>
+        </div>
+        <div class="example-question">"${e.problema}"</div>
+        <div class="field-label">Producto final</div>
+        <div class="example-product">${e.producto}</div>
+        <div class="tag-section-label">Contenidos de alto impacto</div>
+        <div class="tags">${e.impacto.map(i => `<span class="tag impact">${i}</span>`).join('')}</div>
+        <div class="tag-section-label">Contenidos de apoyo</div>
+        <div class="tags">${e.apoyo.map(i => `<span class="tag">${i}</span>`).join('')}</div>
+      </div>
+    `).join('');
+  }
+
+  function filterEx(area, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderExamples(area);
+  }
+
+  function showTab(id, btn) {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  renderExamples('all');
+</script>
+</body>
+</html>
